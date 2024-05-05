@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clock</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800,900&display=swap');
+
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family:'Poppins',sans-serif;
+        }
+        body{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #acbcca;
+            transition: 1.5s;
+            visibility: h;
+        }
+        .clock{
+            position: relative;
+            width: 450px;
+            height: 550px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #c9d5e0;
+            border-radius: 50px;
+            border-top-left-radius: 250px;
+            border-top-right-radius: 250px;
+            box-shadow: 45px 45px 45px -15px rgba(0, 0, 0, 0.15),
+            inset 15px 15px 10px rgba(255, 255, 255, 0.75),
+            -15px -15px 35px rgba(255, 255, 255, 0.55),
+            inset -2px -2px 15px rgba(0, 0, 0, 0.2);
+            transition: 0.9s;
+        }
+        .numbers{
+            position: absolute;
+            top: 30px;
+            width: 390px;
+            height: 390px;
+            background: #152b4a;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 7px 7px 22px #152b4a,
+            inset 7px 7px 7px rgba(255, 255, 255, 0.55),
+            -9px -9px 15px rgba(255, 255, 255, 1);
+            transition: 0.5s;
+        }
+        .numbers::before{
+            content: '';
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: #e91e63;
+            z-index: 10;
+            box-shadow: 0 0 0 1px #e91e63,
+            0 0 0 3px #ffffff,
+            0 0 5px 5px rgba(0, 0, 0, 0.15);
+        }
+        .numbers span{
+            position: absolute;
+            inset: 15px;
+            text-align: center;
+            color: #fff;
+            font-size: 1.25em;
+            transform: rotate(calc(30deg * var(--i)));
+        }
+        .numbers span b{
+            font-weight: 400;
+            display: inline-block;
+            transform: rotate(calc(-30deg * var(--i)));
+        }
+        .numbers .circle{
+            position: absolute;
+            width: 280px;
+            height: 280px;
+            border: 1px solid rgba(0, 0, 0, 0.75);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            z-index: 1;
+        }
+        .numbers .circle i{
+            position: absolute;
+            width: 6px;
+            height: 50%;
+            background: var(--clr);
+            opacity: 0.75;
+            transform-origin: bottom;
+            transform: scaley(0.5);
+        }
+        .numbers .circle#sec i{
+            width: 2px;
+        }
+        .numbers .circle#min i{
+            width: 2px;
+        }
+        .numbers .circle#min {
+            width: 230px;
+            height: 230px;
+        }
+        .numbers .circle#hrs {
+            width: 180px;
+            height: 180px;
+        }
+        .numbers .circle::before{
+            content: '';
+            position: absolute;
+            top: -6px;
+            left: 50%;
+            width: 10px;
+            height: 10px;
+            background: var(--clr);
+            border-radius: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 0 20px var(--clr),
+            0 0 60px var(--clr);
+        }
+        #time{
+            position: absolute;
+            bottom: 35px;
+            display: flex;
+            padding: 10px 20px;
+            font-size: 2em;
+            font-weight: 600;
+            background: #152b4a;
+            border-radius: 40px;
+            box-shadow: 7px 7px 22px #152b4a,
+            inset 7px 7px 10px rgba(255, 255, 255, 0.55),
+            -9px -9px 15px rgba(255, 255, 255,1);
+            transition: 0.5s;
+        }
+        #time div{
+            position: relative;
+            width: 60px;
+            text-align: center;
+            color: var(--clr);
+            opacity: 0.75;
+        }
+        #ampm{
+            font-size: 0.5em;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 500;
+        }
+        #time div:nth-child(1)::after,
+        #time div:nth-child(2)::after{
+            content: ':';
+            position: absolute;
+            right: -4px;
+        }
+        #time div:nth-child(2)::after{
+            animation: animate 1s steps(1) infinite;
+        }
+        @keyframes animate{
+            0%{
+                opacity: 1;
+            }
+            50%{
+                opacity: 0;
+            }
+        }
+
+        #auto{
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            bottom: 110px;
+            left: 29px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.8em;
+            font-weight: 600;
+            background: #152b4a;
+            border: none;
+            color: #ffffff;
+            border-radius: 50%;
+            box-shadow: 7px 7px 22px #152b4a,
+            inset 7px 7px 10px rgba(255, 255, 255, 0.55),
+            -9px -9px 15px rgba(255, 255, 255,1);
+            text-transform: uppercase;
+            transition: 0.5s;
+        }
+        #btn{
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            bottom: 41px;
+            left: 29px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.8em;
+            font-weight: 600;
+            background: #152b4a;
+            border: none;
+            color: #ffffff;
+            border-radius: 50%;
+            box-shadow: 7px 7px 22px #152b4a,
+            inset 7px 7px 10px rgba(255, 255, 255, 0.55),
+            -9px -9px 15px rgba(255, 255, 255,1);
+            text-transform: uppercase;
+            transition: 0.5s;
+        }
+        #btn:hover{
+            letter-spacing: 0.1em;
+        }
+        #ampm{
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            bottom: 41px;
+            right: 29px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2em;
+            font-weight: 600;
+            background: #152b4a;
+            border: none;
+            color: #ffffff;
+            border-radius: 50%;
+            box-shadow: 7px 7px 22px #152b4a,
+            inset 7px 7px 10px rgba(255, 255, 255, 0.55),
+            -9px -9px 15px rgba(255, 255, 255,1);
+            text-transform: uppercase;
+            transition: 0.5s;
+        }
+        #alarm{
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            bottom: 110px;
+            right: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2em;
+            font-weight: 600;
+            background: #152b4a;
+            border: none;
+            color: #ffffff;
+            border-radius: 50%;
+            box-shadow: 7px 7px 22px #152b4a,
+            inset 7px 7px 10px rgba(255, 255, 255, 0.55),
+            -9px -9px 15px rgba(255, 255, 255,1);
+            text-transform: uppercase;
+            transition: 0.5s;
+        }
+        .container{
+            position: relative;
+            width: 350px;
+            height: 172px;
+            display: none;
+            text-align: center;
+            border-radius: 15px;
+            box-shadow: 20px 20px 50px rgba(0, 0, 0, 0.5);
+            background: rgba(255, 255, 255, 0.204);
+            border-top: 1px solid rgba(255, 255, 255, 0.5);
+            border-left: 1px solid rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 100;
+        }
+        .h3{
+            font-size: 1.7em;
+            color: #ffffff;
+            font-weight: 600;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            border-radius: 10px;
+            box-shadow: 7px 1px 22px #152b4a,
+            inset 1px 1px 10px rgba(255, 255, 255, 0.55),
+            -1px -1px 15px rgba(255, 255, 255,1);
+            text-transform: uppercase;
+        }
+        #set{
+            background: transparent;
+            border: none;
+            width: 90px;
+            height: 30px;
+            margin-bottom: 9px;
+            font-size: 1.2em;
+            font-weight: 600;
+            background: #152b4a;
+            color: #ffffff;
+            border-radius: 20px;
+            box-shadow: 7px 1px 22px #152b4a,
+            inset 1px 1px 10px rgba(255, 255, 255, 0.55),
+            -1px -1px 15px rgba(255, 255, 255,1);
+            text-transform: uppercase;
+            transition: 0.5s;
+
+        }
+        .setAlarm{
+            display: flex;
+            justify-content: space-around;
+            padding: 24px;
+
+        }
+        .column select{
+            background:transparent;
+            border: none;
+            text-align: center;
+            border-radius: 15px;
+            padding: 8px 4px;
+            box-shadow: 20px 20px 50px rgba(0, 0, 0, 0.5);
+            border-top: 1px solid rgba(255, 255, 255, 0.5);
+            border-left: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        .more{
+            position: absolute;
+            background: transparent;
+            border: none;
+            width: 25px;
+            height: 25px;
+            left: 20px;
+            transform: rotate(90deg);
+            font-size: 0.4em;
+            font-weight: 600;
+            color: #ffffff;
+            border-radius: 30px;
+            box-shadow: 7px 1px 22px #152b4a,
+            inset 1px 1px 10px rgba(255, 255, 255, 0.55),
+            -1px -1px 15px rgba(255, 255, 255,1);
+            transition: 0.5s;
+        }
+        .bk-btn{
+            position: absolute;
+            background: transparent;
+            border: none;
+            width: 45px;
+            height: 25px;
+            right: 20px;
+            font-size: 0.4em;
+            font-weight: 600;
+            color: #ffffff;
+            border-radius: 30px;
+            box-shadow: 7px 1px 22px #152b4a,
+            inset 1px 1px 10px rgba(255, 255, 255, 0.55),
+            -1px -1px 15px rgba(255, 255, 255,1);
+            transition: 0.5s;
+        }
+        .alarmLog{
+            position: relative;
+            width: 350px;
+            height:35px;
+            display: block;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            border-radius: 15px;
+            box-shadow: 20px 20px 50px rgba(0, 0, 0, 0.5);
+            background: rgba(255, 255, 255, 0.204);
+            border-top: 1px solid rgba(255, 255, 255, 0.5);
+            border-left: 1px solid rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 100;
+        }
+
+        .btn-delete{
+            position: absolute;
+            background: transparent;
+            border: none;
+            width: 80px;
+            height: 25px;
+            right: 20px;
+            bottom: 5px;
+            font-size: 0.7em;
+            font-weight: 500;
+            background: #152b4a;
+            color: #ffffff;
+            border-radius: 20px;
+            box-shadow: 7px 1px 22px #152b4a,
+            inset 1px 1px 10px rgba(255, 255, 255, 0.55),
+            -1px -1px 15px rgba(255, 255, 255,1);
+            text-transform: uppercase;
+            transition: 0.5s;
+        }
+        .alarm-container{
+            position: absolute;
+            width: 350px;
+            height: 172px;
+            visibility: hidden;
+            display: block;
+            text-align: center;
+            border-radius: 15px;
+            box-shadow: 20px 20px 50px rgba(0, 0, 0, 0.5);
+            background: rgba(255, 14, 14, 0.371);
+            border-top: 1px solid rgba(255, 255, 255, 0.5);
+            border-left: 1px solid rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 100;
+        }
+        .ring{
+            font-size: 27px;
+            font-weight: 600;
+            color: #ffffff;
+        }
+        #stopAlarm{
+            background: transparent;
+            border: none;
+            width: 95px;
+            height: 35px;
+            font-size: 0.7em;
+            font-weight: 500;
+            background: #152b4a;
+            color: #ffffff;
+            border-radius: 20px;
+            box-shadow: 7px 1px 22px #152b4a,
+            inset 1px 1px 10px rgba(255, 255, 255, 0.55),
+            -1px -1px 15px rgba(255, 255, 255,1);
+            text-transform: uppercase;
+        }
+        .alarmList{
+            color:#ffffff;
+            font-size: 19px;
+            font-weight: 900;
+        }
+        .tone{
+            position: absolute;
+            width: 350px;
+            height: 172px;
+            visibility: hidden;
+            display: block;
+            text-align: center;
+            border-radius: 15px;
+            box-shadow: 20px 20px 50px rgba(0, 0, 0, 0.5);
+            background: rgba(45, 161, 161, 0.371);
+            border-top: 1px solid rgba(255, 255, 255, 0.5);
+            border-left: 1px solid rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div class="clock">
+        <div class="numbers">
+            <div class="circle" id="sec" style="--clr:#04fc43;"><i></i></div>
+            <div class="circle" id="min" style="--clr:#fee800;"><i></i></div>
+            <div class="circle" id="hrs" style="--clr:#ff2772;"><i></i></div>
+            <span style="--i:0;"><b>12</b></span>
+            <span style="--i:1;"><b>1</b></span>
+            <span style="--i:2;"><b>2</b></span>
+            <span style="--i:3;"><b>3</b></span>
+            <span style="--i:4;"><b>4</b></span>
+            <span style="--i:5;"><b>5</b></span>
+            <span style="--i:6;"><b>6</b></span>
+            <span style="--i:7;"><b>7</b></span>
+            <span style="--i:8;"><b>8</b></span>
+            <span style="--i:9;"><b>9</b></span>
+            <span style="--i:10;"><b>10</b></span>
+            <span style="--i:11;"><b>11</b></span>
+        </div>
+        <!-- auto mode changer -->
+        <div>
+            <button id="auto">off</button>
+        </div>
+        <!-- mode changer -->
+        <div>
+            <button id="btn">dark</button>
+        </div>
+        <!-- digital clock -->
+        <div id="time">
+            <div id="hour" style="--clr:#ff2772;">00</div>
+            <div id="minutes" style="--clr:#fee800;">00</div>
+            <div id="seconds" style="--clr:#04fc43;">00</div>
+        </div>
+        <!-- am or pm -->
+        <div>
+            <div id="ampm" style="--clr:#fff;">AM</div>
+        </div>
+        <div>
+            <button id="alarm">⏰</button>
+        </div>
+        <!-- alarm -->
+        
+        <div class="container">
+            
+            <div class="h3">
+                <button class="more">|||</button>
+                <h3>Alarm </h3>
+                <button class="bk-btn"> back&gt; </button>
+                
+            </div>
+            
+            <div class="alarm">
+                <div class="setAlarm">
+        
+                    <div class="column">
+                        <select>
+                            <option value="setHour" selected hidden>Hour</option>
+                        </select>
+                    </div>
+        
+                    <div class="column">
+                        <select>
+                            <option value="setMinute" selected hidden>Minute</option>
+                            
+                        </select>
+                    </div>
+        
+                    <div class="column">
+                        <select>
+                            <option value="AM/PM" selected hidden>AM/PM</option>
+                        </select>
+                    </div>
+                    
+                </div>
+                <button id="set">SET</button>
+        
+        
+        
+                <div class="alarmList"></div>
+            </div>
+        
+        </div>
+        
+        <!-- alarm ringing screen -->
+        <div class="alarm-container">
+            <div>
+                <br><br>
+                <h3 class="ring">🔔ALARM IS RINGING🔔</h3>
+                <br>
+                <button id="stopAlarm" onclick="stopAlarm()">stop</button>
+            </div>
+        </div>
+
+        <!-- tone selector  -->
+        <div class="tone">
+            <h1>Select Tune</h1>
+
+            <input type="file" accept="audio/mp3" id="audioInput">
+        
+            <button type="button" id="select">Select Audio</button>
+        </div>
+    </div>
+    
+    <script>
+        let select = document.querySelector('#select');
+  let file;
+  const reader = new FileReader();
+  const ring = new Audio();
+  let audioURL;
+  select.addEventListener('click',()=>{
+      file = document.getElementById('audioInput').files[0];
+      reader.addEventListener('load', function() {
+          audioURL = reader.result;
+          
+      ring.src = audioURL;
+      });
+      reader.readAsDataURL(file);
+      // audioURL = reader.result;
+      
+  });
+        // variables  for alarm
+        let alarmListArr = [];
+        const selectMenu = document.querySelectorAll("select");
+        const setAlarmBtn = document.querySelector("#set");
+        let alarmCount = 0;
+        let alarmTime;
+        // let ring = new Audio();
+        // ring.src = audioURL;
+        // ring.play;
+        // audio.preload = "auto";
+
+        let hr = document.querySelector('#hrs');
+        let mn = document.querySelector('#min');
+        let sc = document.querySelector('#sec');
+
+        setInterval(()=>{
+            let day = new Date();
+            let hh = day.getHours()*30;
+            let mm = day.getMinutes()*6;
+            let ss = day.getSeconds()*6;
+
+            hr.style.transform = `rotateZ(${hh+(mm/12)}deg)`;
+            mn.style.transform = `rotateZ(${mm}deg)`;
+            sc.style.transform = `rotateZ(${ss}deg)`;
+
+            //digital clock
+            let hour = document.getElementById('hour');
+            let minutes = document.getElementById('minutes');
+            let seconds = document.getElementById('seconds');
+            let ampm = document.getElementById('ampm');
+
+            let h = new Date().getHours();
+            let m = new Date().getMinutes();
+            let s = new Date().getSeconds();
+            
+            
+
+            var am = h>=12?'PM':'AM';
+
+            if(h>12){
+                h-=12;
+            }
+            h=(h<10)?"0"+h:h;
+            m=(m<10)?"0"+m:m;
+            s=(s<10)?"0"+s:s;
+
+            hour.innerHTML = h;
+            minutes.innerHTML = m;
+            seconds.innerHTML = s;
+            ampm.innerHTML = am;
+
+            //theme auto change according to time
+            if(auto.innerHTML=='on'){
+                if((am=='PM')){
+                    mode.innerHTML='dark';
+                    mod();
+                }
+                if((am=='AM')){
+                    mode.innerHTML='light';
+                    mod();
+                }
+            }
+
+            for(let i=0; i<alarmListArr.length;i++){
+                // ring.loop = false;
+                if(alarmListArr[i]==`${h}:${m}:${s} ${am}`){
+                    console.log("Alarm ringing...");
+                    ring.play();
+                    // ring.loop=true;
+                    document.querySelector(".alarm-container").style.visibility= "visible";
+                }
+            }
+        },100)
+
+        let h = new Date().getHours();
+        let s = new Date().getSeconds();
+        let m = new Date().getMinutes();
+        // code for changing theme button
+        let mode = document.querySelector('#btn');
+            mode.addEventListener('click',()=>{
+            mod();
+        });
+
+        // auto theme change button
+        let auto = document.querySelector('#auto');
+        
+        auto.addEventListener('click',()=>{
+            if(auto.innerHTML=='on'){
+                auto.innerHTML='off';
+            }else if(auto.innerHTML=='off'){
+                auto.innerHTML='on';
+            }
+        });
+        
+        //theme function
+        function mod(){
+            if(mode.innerHTML=='dark'){
+                mode.innerHTML = 'light';
+                document.querySelector('.numbers').style.background = '#0b1727';
+                document.querySelector('.numbers').style.boxShadow = '7px 7px 22px #152b4a,inset 7px 7px 10px rgba(33, 31, 31, 0.55),-9px -9px 15px rgb(13, 13, 13)';
+                document.querySelector('#time').style.background = '#0b1727';
+                document.querySelector('#time').style.boxShadow = '7px 7px 22px #152b4a,inset 7px 7px 10px rgba(33, 31, 31, 0.55),-9px -9px 15px rgb(13, 13, 13)';
+                document.querySelector('#auto').style.background = '#0b1727';
+                document.querySelector('#auto').style.boxShadow = '7px 7px 22px #152b4a,inset 7px 7px 10px rgba(33, 31, 31, 0.55),-9px -9px 15px rgb(13, 13, 13)';
+                document.querySelector('#btn').style.background = '#0b1727';
+                document.querySelector('#btn').style.boxShadow = '7px 7px 22px #152b4a,inset 7px 7px 10px rgba(33, 31, 31, 0.55),-9px -9px 15px rgb(13, 13, 13)';
+                document.querySelector('#ampm').style.background = '#0b1727';
+                document.querySelector('#ampm').style.boxShadow = '7px 7px 22px #152b4a,inset 7px 7px 10px rgba(33, 31, 31, 0.55),-9px -9px 15px rgb(13, 13, 13)';
+                document.querySelector('body').style.background = '#232f3a';
+                document.querySelector('body').style.boxShadow = '7px 7px 22px #152b4a,inset 7px 7px 10px rgba(33, 31, 31, 0.55),-9px -9px 15px rgb(13, 13, 13)';
+                document.querySelector('.clock').style.background = '#1a2129';
+                document.querySelector('.clock').style.boxShadow = '7px 7px 22px #152b4a,inset 7px 7px 10px rgba(33, 31, 31, 0.55),-9px -9px 15px rgb(13, 13, 13)';
+                document.querySelector('#alarm').style.background = '#0b1727';
+                document.querySelector('#alarm').style.boxShadow = '7px 7px 22px #152b4a,inset 7px 7px 10px rgba(33, 31, 31, 0.55),-9px -9px 15px rgb(13, 13, 13)';
+                
+                document.querySelector('.h3').style.color = '#fff';
+                document.querySelector('.h3').style.boxShadow = '7px 7px 22px #152b4a,inset 7px 7px 10px rgba(33, 31, 31, 0.55),-9px -9px 15px rgb(13, 13, 13)';
+                document.querySelector('.container').style.color = '#fff';
+                document.querySelector('.container').style.boxShadow = '7px 7px 22px #152b4a,inset 7px 7px 10px rgba(33, 31, 31, 0.55),-9px -9px 15px rgb(13, 13, 13)';
+                document.querySelector('.alarm-container').style.boxShadow = '7px 7px 22px #152b4a,inset 7px 7px 10px rgba(33, 31, 31, 0.55),-9px -9px 15px rgb(13, 13, 13)';
+            }else if(mode.innerHTML=='light'){
+                mode.innerHTML = 'dark';
+                document.querySelector('.numbers').style.background = '#3b639b';
+                document.querySelector('.numbers').style.boxShadow = '7px 7px 22px #152b4a,inset 7px 7px 7px rgba(255, 255, 255, 0.55),-9px -9px 15px rgba(255, 255, 255, 1)';
+                document.querySelector('#time').style.background = '#3b639b';
+                document.querySelector('#time').style.boxShadow = '7px 7px 22px #152b4a,inset 7px 7px 7px rgba(255, 255, 255, 0.55),-9px -9px 15px rgba(255, 255, 255, 1)';
+                document.querySelector('#auto').style.background = '#3b639b';
+                document.querySelector('#auto').style.boxShadow = '7px 7px 22px #152b4a,inset 7px 7px 10px rgba(255, 255, 255, 0.55),-9px -9px 15px rgba(255, 255, 255,1)';
+                document.querySelector('#btn').style.background = '#3b639b';
+                document.querySelector('#btn').style.boxShadow = '7px 7px 22px #152b4a,inset 7px 7px 10px rgba(255, 255, 255, 0.55),-9px -9px 15px rgba(255, 255, 255,1)';
+                document.querySelector('#ampm').style.background = '#3b639b';
+                document.querySelector('#ampm').style.boxShadow = '7px 7px 22px #152b4a,inset 7px 7px 10px rgba(255, 255, 255, 0.55),-9px -9px 15px rgba(255, 255, 255,1)';
+                document.querySelector('body').style.background = '#acbcca';
+                document.querySelector('body').style.boxShadow = '45px 45px 45px -15px rgba(0, 0, 0, 0.15),inset 15px 15px 10px rgba(255, 255, 255, 0.75),-15px -15px 35px rgba(255, 255, 255, 0.55),inset -2px -2px 15px rgba(0, 0, 0, 0.2)';
+                document.querySelector('.clock').style.background = '#c9d5e0';
+                document.querySelector('.clock').style.boxShadow = '45px 45px 45px -15px rgba(0, 0, 0, 0.15),inset 15px 15px 10px rgba(255, 255, 255, 0.75),-15px -15px 35px rgba(255, 255, 255, 0.55),inset -2px -2px 15px rgba(0, 0, 0, 0.2)';
+                document.querySelector('#alarm').style.background = '#3b639b';
+                document.querySelector('#alarm').style.boxShadow = '7px 7px 22px #152b4a,inset 7px 7px 10px rgba(255, 255, 255, 0.55),-9px -9px 15px rgba(255, 255, 255,1)';
+                document.querySelector('.h3').style.color = '#0b1727';
+                document.querySelector('.h3').style.boxShadow = '7px 7px 22px #152b4a,inset 7px 7px 10px rgba(255, 255, 255, 0.55),-9px -9px 15px rgba(255, 255, 255,1)';
+                document.querySelector('.container').style.color = '#0b1727';
+                document.querySelector('.container').style.boxShadow = '7px 7px 22px #152b4a,inset 7px 7px 10px rgba(255, 255, 255, 0.55),-9px -9px 15px rgba(255, 255, 255,1)';
+                document.querySelector('.alarm-container').style.boxShadow = '7px 7px 22px #152b4a,inset 7px 7px 10px rgba(255, 255, 255, 0.55),-9px -9px 15px rgba(255, 255, 255,1)';
+            }
+        }
+        //alarm screen
+        let alarm = document.querySelector('#alarm');
+        let container = document.querySelector('.container');
+        
+        alarm.addEventListener('click',()=>{
+            if(container.style.display == 'block'){
+                container.style.display = 'none'
+            }else{
+                container.style.display = 'block';
+            }
+        });
+
+        let back = document.querySelector('.bk-btn');
+        
+        back.addEventListener('click',()=>{
+            container.style.display = 'none';
+        });
+         
+        //alarm part
+
+        
+        //Set Alarm section
+        for(let i=12;i>0;i--){
+            i = i<10 ? "0"+i : i;
+            let option = `<option value="${i}">${i}</option>`;
+            selectMenu[0].firstElementChild.insertAdjacentHTML("afterend",option);
+        }
+
+        for(let i=59;i>0;i--){
+            i = i<10 ? "0"+i : i;
+            let option = `<option value="${i}">${i}</option>`;
+            selectMenu[1].firstElementChild.insertAdjacentHTML("afterend",option);
+        }
+
+        for(let i=2;i>0;i--){
+            let ampm = i==1 ? "AM" : "PM";
+            let option = `<option value="${ampm}">${ampm}</option>`;
+            selectMenu[2].firstElementChild.insertAdjacentHTML("afterend",option);
+        }
+
+        //add alarm 
+
+
+        function setAlarm(){
+            let time = `${selectMenu[0].value}:${selectMenu[1].value}:00 ${selectMenu[2].value}`;
+            if(time.includes("setHour") || time.includes("setMinute") || time.includes("AM/PM")){
+                alert("Please, Select Valide Input");
+            }else{
+                alarmCount++;
+                document.querySelector(".alarmList").innerHTML += `
+                <div class="alarmLog" id="alarm${alarmCount}">
+                    <span id="span${alarmCount}">${time}</span>
+                    <button class="btn-delete" id="${alarmCount}" onClick="deleteAlarm(this.id)">Delete</button>
+                </div>`;
+
+                alarmTime = `${selectMenu[0].value}:${selectMenu[1].value}:00 ${selectMenu[2].value}`;
+                alarmListArr.push(alarmTime);
+                console.log(document.querySelector(".btn-delete").value);
+            }
+
+        }
+
+        setAlarmBtn.addEventListener("click",setAlarm);
+
+
+        function deleteAlarm(click_id){
+            var element = document.getElementById("alarm"+click_id);
+            var deleteIndex = alarmListArr.indexOf(document.querySelector("#span"+click_id).innerText);
+            alarmListArr.splice(deleteIndex,1);
+            element.remove();
+        }
+
+        function stopAlarm(){
+            ring.pause();
+            document.querySelector(".alarm-container").style.visibility= "hidden";
+
+        }
+        select.addEventListener('click',()=>{
+            document.querySelector(".tone").style.visibility= "hidden";
+        });
+    </script>
+</body>
+</html>
+<!-- created by me(Ishan)😁 -->
